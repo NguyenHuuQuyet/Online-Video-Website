@@ -6,7 +6,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>AdminLTE 3 | Dashboard</title>
+    <title>AdminLTE 3 | Video   </title>
 
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -213,7 +213,7 @@
                     <!-- Add icons to the links using the .nav-icon class
                          with font-awesome or any other icon font library -->
                     <li class="nav-item menu-open">
-                        <a href="admin" class="nav-link active">
+                        <a href="<c:url value='/admin'/> " class="nav-link">
                             <i class="nav-icon fas fa-tachometer-alt"></i>
                             <p>
                                 Home
@@ -221,7 +221,7 @@
                         </a>
                     </li>
                     <li class="nav-item menu-open">
-                        <a href="admin/video?action=view" class="nav-link">
+                        <a href="#" class="nav-link active">
                             <i class="nav-icon fas fa-tachometer-alt"></i>
                             <p>
                                 Video
@@ -230,13 +230,13 @@
                         </a>
                         <ul class="nav nav-treeview">
                             <li class="nav-item">
-                                <a href="admin/video?action=view" class="nav-link">
+                                <a href="<c:url value='/admin/video?action=view'/> " class="nav-link active">
                                     <i class="far fa-circle nav-icon"></i>
                                     <p>Overview</p>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="admin/video?action=add" class="nav-link">
+                                <a href="<c:url value='/admin/video?action=add'/>" class="nav-link">
                                     <i class="far fa-circle nav-icon"></i>
                                     <p>New or Edit</p>
                                 </a>
@@ -273,7 +273,7 @@
         <section class="content">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Favorites Statistic</h3>
+                    <h3 class="card-title">List Video</h3>
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
@@ -281,16 +281,25 @@
                         <thead>
                         <tr>
                             <th>Title</th>
+                            <th>Description</th>
                             <th>Link</th>
-                            <th>Total Like</th>
+                            <th>Poster</th>
+                            <th>Action</th>
                         </tr>
                         </thead>
                         <tbody>
                             <c:forEach items="${videos}" var="item">
                                 <tr>
                                     <td>${item.title}</td>
-                                    <td><a href="video?action=watch&id=${item.href}">${item.href}</a></td>
-                                    <td>${item.totalLike}</td>
+                                    <td>${item.description}</td>
+                                    <td><a href="<c:url value='/video?action=watch&id=${item.href}'/> ">${item.href}</a></td>
+                                    <td>
+                                        <img src="${item.poster}" width="150px" height="150px"/>
+                                    </td>
+                                    <td>
+                                        <a href="<c:url value='/admin/video?action=edit&href=${item.href}'/> " type="button" class="btn btn-block btn-success btn-sm">Edit</a>
+                                        <button type="button" onclick="deleteVideo('${item.href}')" class="btn btn-block btn-danger btn-sm">Delete</button>
+                                    </td>
                                 </tr>
                             </c:forEach>
                         </tbody>
@@ -298,34 +307,7 @@
                 </div>
                 <!-- /.card-body -->
             </div>
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Favorites Info</h3>
-                </div>
-                <!-- /.card-header -->
-                <div class="card-body">
-                    <div class="form-group">
-                        <label>List Videos</label>
-                        <select id="selectVideo" class="form-control">
-                            <option selected disabled>Select one</option>
-                            <c:forEach items="${videos}" var="item">
-                                <option value="${item.href}">${item.title}</option>
-                            </c:forEach>
-                        </select>
-                    </div>
-                    <table id="example2" class="table table-bordered table-striped">
-                        <thead>
-                        <tr>
-                            <th>Username</th>
-                            <th>Email</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
-                </div>
-                <!-- /.card-body -->
-            </div>
+
         </section>
         <!-- /.content -->
     </div>
@@ -404,43 +386,16 @@
             "responsive": true, "lengthChange": false, "autoWidth": false,
             "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
         }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-        $('#example2').DataTable({
-            "paging": true,
-            "lengthChange": false,
-            "searching": false,
-            "ordering": true,
-            "info": true,
-            "autoWidth": false,
-            "responsive": true,
-        });
     });
-
-    $('#selectVideo').change(function () {
-        var videoHref = $(this).val();
+    function deleteVideo(href) {
         $.ajax({
-            url: 'admin/favorites?href=' + videoHref,
-            type: 'GET',
-            contentType: 'application/json'
-        }).done(function (data) {
-            $('#example2').dataTable({
-                destroy: true,
-                "paging": true,
-                "lengthChange": false,
-                "searching": false,
-                "ordering": true,
-                "info": true,
-                "autoWidth": false,
-                "responsive": true,
-                "aaData": data,
-                "columns" : [
-                    {"data": "username"},
-                    {"data": "email"}
-                ]
-            });
+            url: '/demo_war_exploded/admin/video?action=delete&href=' + href
+        }).then(function (data) {
+            window.location.href = "http://localhost:8080/demo_war_exploded/admin/video?action=view"
         }).fail(function (error) {
-            $('#example2').dataTable().fnClearTable();
+            alert("Oop! Please try again");
         })
-    })
+    }
 </script>
 </body>
 </html>

@@ -23,7 +23,7 @@ import java.util.List;
 @WebServlet(urlPatterns = {"/index","/favorites","/history"})
 public class HomeController extends HttpServlet {
     private static final long serialVersionUID = 5853287788312916984L;
-    private static final int VIDEO_MAX_PAGE_SIZE = 2;
+    private static final int VIDEO_MAX_PAGE_SIZE = 4;
     private VideoService videoService= new VideoServiceImpl();
     private HistoryService historyService = new HistoryServiceImpl();
     @Override
